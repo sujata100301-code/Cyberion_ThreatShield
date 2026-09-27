@@ -1,0 +1,361 @@
+[
+    {
+        "id": 1,
+        "name": "Suspicious Command Shell Spawned by FTP",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\ftp.exe"
+            ],
+            [
+                "Image",
+                "endswith",
+                "\\cmd.exe"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1059.003"
+    },
+    {
+        "id": 2,
+        "name": "Windows Failed Logon Attempt",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4625"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1110"
+    },
+    {
+        "id": 3,
+        "name": "RDP Network Connection",
+        "conditions": [
+            [
+                "DestinationPort",
+                "equals",
+                "3389"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1021.001"
+    },
+    {
+        "id": 4,
+        "name": "SMB Network Connection",
+        "conditions": [
+            [
+                "DestinationPort",
+                "equals",
+                "445"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1021.002"
+    },
+    {
+        "id": 5,
+        "name": "IIS Worker Process Making RDP Connection",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\w3wp.exe"
+            ],
+            [
+                "DestinationPort",
+                "equals",
+                "3389"
+            ],
+            [
+                "Protocol",
+                "equals",
+                "tcp"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1021.001"
+    },
+    {
+        "id": 6,
+        "name": "Process Spawned by Windows Remote Management Provider",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\wsmprovhost.exe"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1021.006"
+    },
+    {
+        "id": 7,
+        "name": "PowerShell Script Block With Base64 Decoding",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains",
+                "FromBase64String"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1059.001"
+    },
+    {
+        "id": 8,
+        "name": "PowerShell Credential Access via GetNetworkCredential",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains",
+                "GetNetworkCredential"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1555"
+    },
+    {
+        "id": 9,
+        "name": "PowerShell LSASS MiniDumpWriteDump Activity",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4104"
+            ],
+            [
+                "ScriptBlockText",
+                "contains_all",
+                [
+                    "Get-Process lsass",
+                    "MiniDumpWriteDump"
+                ]
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1003.001"
+    },
+    {
+        "id": 10,
+        "name": "Scheduled Task Creation Executing Command Shell",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4698"
+            ],
+            [
+                "TaskContent",
+                "contains",
+                "cmd.exe"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1053.005"
+    },
+    {
+        "id": 11,
+        "name": "Winlogon Shell Registry Modification",
+        "conditions": [
+            [
+                "TargetObject",
+                "contains",
+                "\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Shell"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1547.004"
+    },
+    {
+        "id": 12,
+        "name": "PowerShell Execution Policy Changed to Unrestricted",
+        "conditions": [
+            [
+                "TargetObject",
+                "endswith",
+                "\\Microsoft.PowerShell\\ExecutionPolicy"
+            ],
+            [
+                "Details",
+                "equals",
+                "Unrestricted"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1059.001"
+    },
+    {
+        "id": 13,
+        "name": "MSHTA Execution of HTA File",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\mshta.exe"
+            ],
+            [
+                "CommandLine",
+                "contains",
+                ".hta"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1218.005"
+    },
+    {
+        "id": 14,
+        "name": "Rundll32 PCWUTL LaunchApplication Execution",
+        "severity": "medium",
+        "mitre_attack": "T1218.011",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\rundll32.exe"
+            ],
+            [
+                "CommandLine",
+                "contains_all",
+                [
+                    "pcwutl.dll",
+                    "LaunchApplication"
+                ]
+            ]
+        ]
+    },
+    {
+        "id": 15,
+        "name": "Command Shell Spawned by WMI Provider",
+        "conditions": [
+            [
+                "ParentImage",
+                "endswith",
+                "\\wmiprvse.exe"
+            ],
+            [
+                "Image",
+                "endswith",
+                "\\cmd.exe"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1047"
+    },
+    {
+        "id": 16,
+        "name": "New Windows Service Executing Command Shell",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "7045"
+            ],
+            [
+                "ImagePath",
+                "contains",
+                "cmd.exe"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1543.003"
+    },
+    {
+        "id": 17,
+        "name": "Member Added to Local Administrators Group",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "4732"
+            ],
+            [
+                "TargetUserName",
+                "equals",
+                "Administrators"
+            ],
+            [
+                "TargetDomainName",
+                "equals",
+                "Builtin"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1098"
+    },
+    {
+        "id": 18,
+        "name": "Remote Desktop Enabled via Registry",
+        "conditions": [
+            [
+                "TargetObject",
+                "endswith",
+                "\\Control\\Terminal Server\\fDenyTSConnections"
+            ],
+            [
+                "Details",
+                "equals",
+                "DWORD (0x00000000)"
+            ]
+        ],
+        "severity": "medium",
+        "mitre_attack": "T1021.001"
+    },
+    {
+        "id": 19,
+        "name": "Windows Defender Threat Action Event",
+        "conditions": [
+            [
+                "EventID",
+                "equals",
+                "1117"
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "N/A"
+    },
+    {
+        "id": 20,
+        "name": "Regsvr32 Scrobj DLL Scriptlet Execution",
+        "conditions": [
+            [
+                "Image",
+                "endswith",
+                "\\regsvr32.exe"
+            ],
+            [
+                "CommandLine",
+                "contains_all",
+                [
+                    "/i:",
+                    "scrobj.dll"
+                ]
+            ]
+        ],
+        "severity": "high",
+        "mitre_attack": "T1218.010"
+    }
+]

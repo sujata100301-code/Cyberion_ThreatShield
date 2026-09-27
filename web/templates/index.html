@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Cyberion ThreatShield
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css', v='cc69c18') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app-shell">
+    {% include "partials/sidebar.html" %}
+
+
+
+    <main class="main-content">
+
+
+
+        <header class="topbar">
+
+    <div>
+
+        <p class="eyebrow">
+            Security Operations Dashboard
+        </p>
+
+        <h1>
+            Cyberion ThreatShield
+        </h1>
+
+        <p class="subtitle">
+            EVTX Detection Engineering &
+            Threat Hunting Platform
+        </p>
+
+    </div>
+
+    <div class="status-pill">
+
+        <span class="status-dot"></span>
+
+        Engine Active
+
+    </div>
+
+</header>
+
+
+        <section
+            id="status"
+            class="stats-grid"
+        >
+
+
+            <div class="stat-card">
+
+                <span class="stat-label">
+                    Detection Rules
+                </span>
+
+                <strong class="stat-value">
+                    {{ total_rules }}
+                </strong>
+
+                <span class="stat-caption">
+                    Sigma-inspired rules loaded
+                </span>
+
+            </div>
+
+<div class="stat-card">
+    <span class="stat-label">
+        Total Scans
+    </span>
+
+    <strong class="stat-value">
+        {{ analytics.total_scans }}
+    </strong>
+
+    <span class="stat-caption">
+        Recent EVTX analyses
+    </span>
+</div>
+
+<div class="stat-card">
+    <span class="stat-label">
+        Total Events
+    </span>
+
+    <strong class="stat-value">
+        {{ analytics.total_events }}
+    </strong>
+
+    <span class="stat-caption">
+        Events analyzed
+    </span>
+</div>
+
+           <div class="stat-card">
+    <span class="stat-label">
+        Total Alerts
+    </span>
+
+    <strong class="stat-value">
+        {{ analytics.total_alerts }}
+    </strong>
+
+    <span class="stat-caption">
+        Threat signals detected
+    </span>
+</div>
+
+        </section>
+<!-- ANALYTICS CHART -->
+<section class="panel">
+
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">Analytics</p>
+            <h2>Recent Scan Activity</h2>
+        </div>
+
+        <span class="panel-badge">
+            Latest 10 scans
+        </span>
+    </div>
+
+    <div
+        class="chart-container"
+        id="scanActivityChart"
+    >
+        {% for scan in scan_history %}
+
+        <div
+            class="chart-data"
+            data-filename="{{ scan.filename }}"
+            data-events="{{ scan.total_events }}"
+            data-alerts="{{ scan.total_alerts }}"
+        ></div>
+
+        {% endfor %}
+    </div>
+
+</section>
+
+
+        
+        <!-- SEVERITY ANALYTICS -->
+<section class="panel">
+
+    <div class="panel-header">
+        <div>
+            <p class="eyebrow">
+                Threat Analytics
+            </p>
+
+            <h2>
+                Alert Severity Breakdown
+            </h2>
+        </div>
+
+        <span class="panel-badge">
+            Recent scans
+        </span>
+    </div>
+
+    <div class="severity-analytics">
+
+        <div class="severity-stat high">
+            <span>High</span>
+            <strong>
+                {{ analytics.high_alerts }}
+            </strong>
+        </div>
+
+        <div class="severity-stat medium">
+            <span>Medium</span>
+            <strong>
+                {{ analytics.medium_alerts }}
+            </strong>
+        </div>
+
+        <div class="severity-stat low">
+            <span>Low</span>
+            <strong>
+                {{ analytics.low_alerts }}
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+            <section
+    id="scanner"
+    class="panel scanner-panel"
+>
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Threat Scanner
+                    </p>
+
+                    <h2>
+                        Scan Windows EVTX
+                    </h2>
+
+                </div>
+
+
+                <span class="panel-badge">
+                    20-rule engine
+                </span>
+
+
+            </div>
+
+
+
+            <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+                class="upload-form"
+            >
+
+
+                <label
+                    class="file-drop"
+                    for="evtx_file"
+                >
+
+
+                    <span class="upload-icon">
+                        ↑
+                    </span>
+
+
+                    <span class="upload-title">
+                        Select an EVTX file
+                    </span>
+
+
+                    <span class="upload-subtitle">
+                        Windows Event Log files only
+                    </span>
+
+
+                    <input
+                        id="evtx_file"
+                        type="file"
+                        name="evtx_file"
+                        accept=".evtx"
+                        required
+                    >
+
+
+                </label>
+
+
+
+                <button
+                    class="scan-button"
+                    type="submit"
+                >
+
+                    Scan EVTX
+
+                </button>
+
+
+            </form>
+
+
+
+            {% if message %}
+
+            <div class="message success">
+
+                {{ message }}
+
+            </div>
+
+            {% endif %}
+
+
+
+            {% if error %}
+
+            <div class="message error">
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+
+        {% if total_events is defined %}
+
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Scan Summary
+                    </p>
+
+                    <h2>
+                        Analysis Results
+                    </h2>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="scan-summary">
+
+
+                <div class="summary-item">
+
+                    <span>
+                        File
+                    </span>
+
+                    <strong>
+                        {{ filename }}
+                    </strong>
+
+                </div>
+
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Events Scanned
+                    </span>
+
+                    <strong>
+                        {{ total_events }}
+                    </strong>
+
+                </div>
+
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Alerts Found
+                    </span>
+
+                    <strong>
+                        {{ total_alerts }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            {% if reports_ready %}
+
+
+            <div class="report-actions">
+
+
+                <a
+                    class="report-button"
+                    href="/download/json"
+                >
+
+                    Download JSON Report
+
+                </a>
+
+
+                <a
+                    class="report-button secondary"
+                    href="/download/csv"
+                >
+
+                    Download CSV Report
+
+                </a>
+<a
+    class="report-button secondary"
+    href="/alerts"
+>
+    View Detected Alerts
+</a>
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        
+
+
+
+       
+
+
+
+
+        <footer class="footer">
+
+            Cyberion ThreatShield
+            • Detection Engineering Platform
+
+        </footer>
+
+
+    </main>
+
+
+</div>
+
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}"
+></script>
+
+
+</body>
+
+</html>
